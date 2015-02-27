@@ -37,7 +37,7 @@ public class Converter {
         	if(endofauthors != 0)
         	{
         		String authors = line.substring(0, endofauthors);
-        		System.out.println(endofauthors);
+        		//System.out.println(endofauthors);
         		csvWriter.append("\"" + authors + "\"\n");
         	}
         	else
