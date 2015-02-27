@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,38 +13,54 @@ public class Converter {
 
         BufferedReader bufferReader = new BufferedReader(input);
         
-        FileWriter writer = new FileWriter("VTTI_pubs.csv");
+        FileWriter csvWriter = new FileWriter("VTTI_pubs.csv");
+        FileWriter logWriter = new FileWriter("log.txt");
 
         // setup the csv columns (Authors, Date, Title, Publication, Location, Date, Volume, Issue, Pages)
-        writer.append("Authors,Date,Title,Publication,Location,Date,Volume,Issue,Pages\n");
-        writer.flush();
+        csvWriter.append("Authors,Date,Title,Publication,Location,Date,Volume,Issue,Pages\n");
+        csvWriter.flush();
         
         String line;
+        
+        // count for citations that are placed in log file that correlates to the line number in
+        // the input file
+        int count = 1;
         // go through each line
         while ((line = bufferReader.readLine()) != null)   
         {
         	// looks for ". (" and ", (" which indicates, most of the time, the end of the authors
         	int endofauthors = line.indexOf(". (") + 1;
-        	if(endofauthors == -1)
+        	if(endofauthors == 0)
         	{
         		endofauthors = line.indexOf(", (") + 1;
         	}
-        	if(endofauthors != -1)
+        	if(endofauthors != 0)
         	{
         		String authors = line.substring(0, endofauthors);
-        		writer.append("\"" + authors + "\"\n");
+        		System.out.println(endofauthors);
+        		csvWriter.append("\"" + authors + "\"\n");
+        	}
+        	else
+        	{
+        		logWriter.append("Line number " + count + ": " + line + "\n");
+
+        		// flush citation to the log file since there was an error while parsing
+            	logWriter.flush();
         	}
         	
         	
         	// TO DO: make sure that citation is good
         	
-        	// flush it to the file
-        	writer.flush();
+        	// flush name to the csv file
+        	csvWriter.flush();
+        	
+        	count++;
         }
 		input.close();
 		
 		
-		writer.close();
+		csvWriter.close();
+		logWriter.close();
 		input.close();
 	}
 
