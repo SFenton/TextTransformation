@@ -28,16 +28,37 @@ public class Converter {
         // go through each line
         while ((line = bufferReader.readLine()) != null)   
         {
-        	// looks for ". (" and ", (" which indicates, most of the time, the end of the authors
-        	int endofauthors = line.indexOf(". (") + 1;
-        	if(endofauthors == 0)
+        	// looks for ". (" and ", (" and ", "" and ". "" which indicates, most of the time, the end of the authors
+        	
+        	int[] endofauthors = new int[4];
+        	endofauthors[0] = line.indexOf(". (");
+        	endofauthors[1] = line.indexOf(", (");
+        	endofauthors[2] = line.indexOf(", “");
+        	endofauthors[3] = line.indexOf(". “");
+        	
+        	int min = endofauthors[0];
+        	for(int x = 1; x < 4; x++)
         	{
-        		endofauthors = line.indexOf(", (") + 1;
+        		// if min is -1 then replace it with the next or if that
+        		// endofauthors value is less than the min
+        		if(min == -1 || (endofauthors[x] < min && endofauthors[x] != -1))
+        		{
+        			min = endofauthors[x];
+        		}
         	}
-        	if(endofauthors != 0)
+        	
+        	// check that something was found
+        	if(min != -1)
         	{
-        		String authors = line.substring(0, endofauthors);
-        		//System.out.println(endofauthors);
+        		// add 1 to include the "," or "."
+        		String authors = line.substring(0, min + 1);
+        		
+        		// check if there is a "," at the end and truncate it 
+    			if(authors.endsWith(","))
+    			{
+    				authors = line.substring(0, min);
+    			}
+    			System.out.println(authors);
         		csvWriter.append("\"" + authors + "\"\n");
         	}
         	else
