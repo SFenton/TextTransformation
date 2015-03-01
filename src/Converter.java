@@ -3,12 +3,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class Converter {
 	
 	public static void main (String[] args) throws IOException
 	{
+		// array list of citations
+		ArrayList<Citation> citations = new ArrayList<Citation>();
+		
 		FileReader input = new FileReader("VTTI_pubs.txt");
 
         BufferedReader bufferReader = new BufferedReader(input);
@@ -24,10 +28,16 @@ public class Converter {
         
         // count for citations that are placed in log file that correlates to the line number in
         // the input file
-        int count = 1;
+        int count = 0;
         // go through each line
         while ((line = bufferReader.readLine()) != null)   
         {
+        	// create a new citation object to the list
+        	Citation currentcitation = new Citation();
+        	
+        	// add the new citation to the list
+        	citations.add(currentcitation);
+        	
         	// boolean to hold whether or not there was a parsing error
         	boolean error = false;
         	
@@ -64,7 +74,7 @@ public class Converter {
     				authors = line.substring(0, authorend);
     			}
     			
-        		csvWriter.append("\"" + authors + "\",");
+        		currentcitation.Authors = authors;
         	}
         	else
         	{
@@ -98,7 +108,7 @@ public class Converter {
     			// grab the date with the specified beginning and end
         		String date = line.substring(datebeg, dateend);
         		
-        		csvWriter.append("\"" + date + "\",");
+        		currentcitation.Date1 = date;
     		}
     		else
         	{
@@ -110,12 +120,12 @@ public class Converter {
         		error = true;
         	}
         	
-        	
-        	csvWriter.append("\n");
+    		
+    		csvWriter.append(currentcitation.toCSVString());
         	csvWriter.flush();
         	if(error)
         	{
-        		logWriter.append(" error on line # " + count + ": " + line + "\n");
+        		logWriter.append(" error on line # " + (count+1) + ": " + line + "\n");
         		logWriter.flush();
         	}
         	count++;
