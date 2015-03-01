@@ -28,53 +28,96 @@ public class Converter {
         // go through each line
         while ((line = bufferReader.readLine()) != null)   
         {
-        	// looks for ". (" and ", (" and ", "" and ". "" which indicates, most of the time, the end of the authors
+        	// boolean to hold whether or not there was a parsing error
+        	boolean error = false;
         	
+        	// ~~~~~~~~~~~~~~~~~ Name Parsing Done Here ~~~~~~~~~~~~~~~~~
+        	
+        	// looks for ". (" and ", (" and ", "" and ". "" which indicates, most of the time, the end of the authors
         	int[] endofauthors = new int[4];
         	endofauthors[0] = line.indexOf(". (");
         	endofauthors[1] = line.indexOf(", (");
         	endofauthors[2] = line.indexOf(", “");
         	endofauthors[3] = line.indexOf(". “");
         	
-        	int min = endofauthors[0];
+        	// find the min of the valid indexes found
+        	int authorend = endofauthors[0];
         	for(int x = 1; x < 4; x++)
         	{
         		// if min is -1 then replace it with the next or if that
         		// endofauthors value is less than the min
-        		if(min == -1 || (endofauthors[x] < min && endofauthors[x] != -1))
+        		if(authorend == -1 || (endofauthors[x] < authorend && endofauthors[x] != -1))
         		{
-        			min = endofauthors[x];
+        			authorend = endofauthors[x];
         		}
         	}
         	
-        	// check that something was found
-        	if(min != -1)
+        	// check that one was found
+        	if(authorend > -1)
         	{
         		// add 1 to include the "," or "."
-        		String authors = line.substring(0, min + 1);
+        		String authors = line.substring(0, authorend + 1);
         		
         		// check if there is a "," at the end and truncate it 
     			if(authors.endsWith(","))
     			{
-    				authors = line.substring(0, min);
+    				authors = line.substring(0, authorend);
     			}
-    			System.out.println(authors);
-        		csvWriter.append("\"" + authors + "\"\n");
+    			
+        		csvWriter.append("\"" + authors + "\",");
         	}
         	else
         	{
-        		logWriter.append("Line number " + count + ": " + line + "\n");
-
-        		// flush citation to the log file since there was an error while parsing
-            	logWriter.flush();
+        		logWriter.append("Naming");
+        		error = true;
         	}
         	
         	
-        	// TO DO: make sure that citation is good
+        	// ~~~~~~~~~~~~~~~~~ Date Parsing Done Here ~~~~~~~~~~~~~~~~~
         	
-        	// flush name to the csv file
+        	int begofdateperiod = line.indexOf(". (");
+        	int begofdatecomma = line.indexOf(", (");
+        	
+        	int datebeg = begofdateperiod;
+        	
+        	// change datemin if it is greater than begofdatecomma or is -1
+        	if(datebeg == -1 || (datebeg > begofdatecomma && begofdatecomma != -1))
+        	{
+        		datebeg = begofdatecomma;
+        	}
+        	
+        	// check that one was found
+    		if(datebeg > -1)
+    		{
+    			// add 3 to truncate ". (" or ", ("
+    			datebeg = datebeg + 3;
+    			
+    			// get the closure of the "( date in here  )"
+    			int dateend = line.substring(datebeg).indexOf(")") + datebeg;
+    			
+    			// grab the date with the specified beginning and end
+        		String date = line.substring(datebeg, dateend);
+        		
+        		csvWriter.append("\"" + date + "\",");
+    		}
+    		else
+        	{
+    			if(error)
+    			{
+    				logWriter.append(" & ");
+    			}
+        		logWriter.append("Date");
+        		error = true;
+        	}
+        	
+        	
+        	csvWriter.append("\n");
         	csvWriter.flush();
-        	
+        	if(error)
+        	{
+        		logWriter.append(" error on line # " + count + ": " + line + "\n");
+        		logWriter.flush();
+        	}
         	count++;
         }
 		input.close();
