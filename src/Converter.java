@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -74,7 +75,6 @@ public class Converter {
 		input.close();
 		
 		printCitationsToFile(csvWriter, citations);
-		csvWriter.flush();
 		
 		csvWriter.close();
 		logWriter.close();
@@ -176,16 +176,22 @@ public class Converter {
 	
 	private static void printCitationsToFile(FileWriter csvWriter, ArrayList<Citation> citations) throws IOException
 	{
+		// grab the number of citations
 		int numCitations = citations.size();
+		// go through the citations one by one and append it to the csvWriter
 		for(int x = 0; x < numCitations; x++)
 		{
 			csvWriter.append(citations.get(x).toCSVString());
 		}
+		// flush all the contents to the file
+		csvWriter.flush();
 	}
 	
 	private static void printErrorToFile(FileWriter logWriter, String errorType, int count, String line) throws IOException
 	{
+		// append the error message to the logWriter
 		logWriter.append(errorType + " error on line # " + (count+1) + ": " + line + "\n");
+		// flush the contents to the file
 		logWriter.flush();
 	}
 }
