@@ -9,7 +9,6 @@ public class RegExTree<T>
         root = new Node<T>();
         root.data = rootData;
         root.children = new ArrayList<Node<T>>();
-        root.order = new ArrayList<Order>();
     }
     
     public Node<T> getRoot()
