@@ -20,8 +20,8 @@ public class TextFileTests {
 	@Before
 	public void setUp() throws Exception 
 	{
-		parser = new TextFileParser("C:\\Users\\Stephen Fenton\\Desktop\\test.txt", 
-				"C:\\Users\\Stephen Fenton\\Desktop\\testout.csv");
+		parser = new TextFileParser("C:\\Development\\VTTI_Pubs.txt", 
+				"C:\\Development");
 	}
 
 	@After

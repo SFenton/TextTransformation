@@ -15,6 +15,7 @@ public class TextFileParser
 	private String filepath;
 	private String destination;
 	private List<String> output;
+	private List<String> failedOutput;
 	private List<String> input;
 
 	public TextFileParser(String filepath, String destination) throws IOException
@@ -22,6 +23,7 @@ public class TextFileParser
 		this.filepath = filepath;
 		this.destination = destination;
 		output = new ArrayList<String>();
+		failedOutput = new ArrayList<String>();
 		input = new ArrayList<String>();
 		setupFile();
 	}
@@ -59,14 +61,30 @@ public class TextFileParser
 			{
 				output.add(entry.getValue());
 			}
+			else
+			{
+				failedOutput.add(string);
+			}
 		}
 		
 		for(int i = 0; i < output.size(); i++) 
 		{
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(destination, true))) 
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(destination + "\\testOut.txt", true))) 
             {
                 String s;
 	            s = output.get(i);
+	            bw.write(s);
+	            bw.newLine();
+	            bw.flush();
+            }
+		}
+		
+		for(int i = 0; i < failedOutput.size(); i++) 
+		{
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(destination + "\\FailedOutput.txt", true))) 
+            {
+                String s;
+	            s = failedOutput.get(i);
 	            bw.write(s);
 	            bw.newLine();
 	            bw.flush();

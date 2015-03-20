@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
@@ -11,8 +12,9 @@ public class RegExTraversal {
 	
 	/**
 	 * Constructor for the class.  No variables should need to be initialized.
+	 * @throws IOException 
 	 */
-	public RegExTraversal()
+	public RegExTraversal() throws IOException
 	{
 		InitializeRegExTree();
 	}
@@ -36,54 +38,14 @@ public class RegExTraversal {
 	/**
 	 * Initializes the regular expression tree.
 	 * THIS WILL NOT STAY IN THE FINAL RELEASE.  THIS IS FOR PROTOTYPING PURPOSES ONLY.
+	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
-	private void InitializeRegExTree() 
+	private void InitializeRegExTree() throws IOException 
 	{
-		// Add the root of the tree.  Temporary.
-		tree = new RegExTree(Pattern.compile(".*"));
+		TreeParser parser = new TreeParser("C:\\Development\\sampleTree.rgxt");
 		
-		// Temporary simple child node.
-		Node child = new Node();
-		child.data = Pattern.compile("(.*)\\((\\d{1,4})\\).(.*),(.*),(.*,.*),(.*,.*)(.*)");
-		child.parent = tree.getRoot();
-		child.children = new ArrayList<Node>();
-		child.order = new ArrayList<Order>();
-		
-		// Temporary specific child nodes.
-		Node noSpecificLocation = new Node();
-		noSpecificLocation.data = Pattern.compile("(.*)\\((\\d{1,4})\\).(.*),(.*),(.*,.*),(.*, \\d{1,4})");
-		noSpecificLocation.parent = child;
-		noSpecificLocation.children = new ArrayList<Node>();
-		noSpecificLocation.order = new ArrayList<Order>();
-		
-		noSpecificLocation.order.add(Order.Author);
-		noSpecificLocation.order.add(Order.Year);
-		noSpecificLocation.order.add(Order.Title);
-		noSpecificLocation.order.add(Order.Publication);
-		noSpecificLocation.order.add(Order.Location);
-		noSpecificLocation.order.add(Order.Date);
-		
-		child.children.add(noSpecificLocation);
-		
-		// Specific location nide
-		Node specificLocation = new Node();
-		specificLocation.data = Pattern.compile("(.*)\\((.*)\\).(.*),(.*),(.*,.*,.*),(.*\\d{1,4})");
-		specificLocation.parent = child;
-		specificLocation.children = new ArrayList<Node>();
-		specificLocation.order = new ArrayList<Order>();
-		
-		specificLocation.order.add(Order.Author);
-		specificLocation.order.add(Order.Year);
-		specificLocation.order.add(Order.Title);
-		specificLocation.order.add(Order.Publication);
-		specificLocation.order.add(Order.Location);
-		specificLocation.order.add(Order.Date);
-		
-		child.children.add(specificLocation);
-		
-		tree.getRoot().children.add(child);
-		
+		tree = parser.getTree();		
 	}
 
 	/**
@@ -98,8 +60,11 @@ public class RegExTraversal {
 	 */
 	private SimpleEntry<Boolean, String> TreeTransformation(String input, Node node) 
 	{
+		Object data = node.data;
+		Pattern p = (Pattern) data;
+		
 		// Match the input with the pattern.  If we find a match, do something with it.
-		Matcher match = ((Pattern)node.data).matcher(input);
+		Matcher match = p.matcher(input);
 		if (match.find())
 		{
 			// If we find no children, we've found the regex.  Reorder the input string and return.
@@ -170,9 +135,24 @@ public class RegExTraversal {
 	 */
 	private String formatString(String subGroup, Order enumOrder) 
 	{
+		if (subGroup.contains("Al-Qadi, I. L., Lahouar, S. Loulizi, A., Elseifi, M., Wilkes, J. A., and Freeman, T. E."))
+		{
+			System.out.println(subGroup);
+		}
 		String output = "";
 		// Split the string based on comma
-		String[] subGroup_split = subGroup.split("\\.,");
+		String[] subGroup_split = subGroup.split("\\.,| and | &");
+		
+		// TODO: Don't be a hacky 1114 student
+		List<String> list = new ArrayList<String>();
+
+	    for(String s : subGroup_split) {
+	       if(s != null && s.length() > 0) {
+	          list.add(s);
+	       }
+	    }
+
+	    subGroup_split = list.toArray(new String[list.size()]);
 		
 		// Enum-specific operations should go here
 		if (enumOrder.equals(Order.Author))

@@ -12,6 +12,11 @@ public class RegExTree<T>
         root.order = new ArrayList<Order>();
     }
     
+    public RegExTree(Node root)
+    {
+    	this.root = root;
+    }
+    
     public Node<T> getRoot()
     {
     	return root;
