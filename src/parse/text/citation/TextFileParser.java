@@ -1,3 +1,4 @@
+package parse.text.citation;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -9,19 +10,24 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import tree.regex.RegExTree;
+import tree.regex.traversal.RegExTraversal;
+
 
 public class TextFileParser 
 {
 	private String filepath;
 	private String destination;
+	private RegExTree regexTree;
 	private List<String> output;
 	private List<String> failedOutput;
 	private List<String> input;
 
-	public TextFileParser(String filepath, String destination) throws IOException
+	public TextFileParser(String filepath, String destination, RegExTree regexTree) throws IOException
 	{
 		this.filepath = filepath;
 		this.destination = destination;
+		this.regexTree = regexTree;
 		output = new ArrayList<String>();
 		failedOutput = new ArrayList<String>();
 		input = new ArrayList<String>();
@@ -52,7 +58,7 @@ public class TextFileParser
 	
 	public void addToOutput() throws IOException
 	{
-		RegExTraversal traversal = new RegExTraversal();
+		RegExTraversal traversal = new RegExTraversal(regexTree);
 		
 		for (String string : input)
 		{

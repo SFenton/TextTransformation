@@ -1,8 +1,14 @@
+package tree.regex.traversal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.regex.*;
+
+import parse.binary.tree.TreeParser;
+import tree.regex.RegExTree;
+import tree.regex.components.Node;
+import tree.regex.components.Order;
 
 
 public class RegExTraversal {
@@ -14,9 +20,9 @@ public class RegExTraversal {
 	 * Constructor for the class.  No variables should need to be initialized.
 	 * @throws IOException 
 	 */
-	public RegExTraversal() throws IOException
+	public RegExTraversal(RegExTree regexTree) throws IOException
 	{
-		InitializeRegExTree();
+		this.tree = regexTree;
 	}
 	
 	/**
@@ -33,19 +39,6 @@ public class RegExTraversal {
 		}
 		
 		return TreeTransformation(input, tree.getRoot());
-	}
-
-	/**
-	 * Initializes the regular expression tree.
-	 * THIS WILL NOT STAY IN THE FINAL RELEASE.  THIS IS FOR PROTOTYPING PURPOSES ONLY.
-	 * @throws IOException 
-	 */
-	@SuppressWarnings("unchecked")
-	private void InitializeRegExTree() throws IOException 
-	{
-		TreeParser parser = new TreeParser("C:\\Development\\sampleTree.rgxt");
-		
-		tree = parser.getTree();		
 	}
 
 	/**

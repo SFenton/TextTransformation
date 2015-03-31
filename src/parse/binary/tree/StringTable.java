@@ -1,3 +1,4 @@
+package parse.binary.tree;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 
@@ -9,8 +10,4 @@ public class StringTable
     public int sizeLeadingUpToTable;
     public List<SimpleEntry<Long, String>> stringTable;
     
-    public StringTable()
-    {
-    	
-    }
 }

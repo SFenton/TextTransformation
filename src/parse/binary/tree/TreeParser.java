@@ -1,3 +1,4 @@
+package parse.binary.tree;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -7,6 +8,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import tree.regex.RegExTree;
+import tree.regex.components.Node;
+import tree.regex.components.Order;
 
 /**
  * Parses a binary file into a tree structure for visualization.
@@ -22,19 +27,18 @@ public class TreeParser
     
     // The JTree.
 	private RegExTree tree;
-
-    /**
-     * Constructor for the class.  Initializes parsing.
-     * @param filePath Path to the binary.
-     * @throws IOException In event of read/write fail.
-     */
-    public TreeParser(String filePath) throws IOException
+    
+    public TreeParser()
+    {
+    	parser = new StringTableParser();
+    }
+    
+    public void parseRegexTreeFromFile(String filePath) throws IOException
     {
     	// Read the file into a byte array
     	Path path = Paths.get(filePath);
         byte[] fileBytes = Files.readAllBytes(path);
 
-        parser = new StringTableParser();
         stblParser(fileBytes);
         zobjParser(fileBytes);
     }
@@ -44,7 +48,7 @@ public class TreeParser
      * @param p The key to find a string with.
      * @return The string associated with key p.
      */
-    public String FindValue(long p)
+    private String FindValue(long p)
     {
         for (int i = 0; i < engParser.stringTable.size(); i++ )
         {
@@ -165,9 +169,7 @@ public class TreeParser
     private RegExTree generateEntries(byte[] chunkRawData, int index_original, int numEntries)
     {
         Node top = nodeGenerator(chunkRawData, index_original);
-        tree = new RegExTree(top);
-        	
-        return tree;
+        return new RegExTree(top);
     }
 
     /**
