@@ -14,6 +14,21 @@ import tree.regex.RegExTree;
 import tree.regex.traversal.RegExTraversal;
 
 
+/**
+ * Notes for improvement:
+ * Add javadoc to class, class variables, and functions.
+ * Eliminate magic strings.
+ * Add simple comments for some loops to explain purpose, otherwise
+ * 		make better function names.
+ * The text file parser could have a better name referencing citations.
+ * The text file parser name does not suggest that any output is being produced; moreover,
+ * 		(and possibly due to the naming) the class is trying to handle more than one focused
+ * 		purpose.
+ * 
+ */
+
+
+
 public class TextFileParser 
 {
 	private String filepath;

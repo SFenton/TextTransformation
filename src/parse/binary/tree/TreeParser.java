@@ -13,6 +13,28 @@ import tree.regex.RegExTree;
 import tree.regex.components.Node;
 import tree.regex.components.Order;
 
+
+
+/**
+ * Notes for improvement:
+ * The class name is unclear, how does someone parse a tree, you are in fact parsing a binary file
+ * 		and translating that data into a tree.
+ * Please remove outdated comments, such as referencing JTree.
+ * The class variable names are unclear. engParser in no way represents a simple object
+ * 		that hold table values. the variable parser within a 'parser' class is meaningless.
+ * zobjParser is not a name that immediately makes sense, please make it clearer.
+ * 		the same follows for nobjHelper.
+ * nodeGenerator sounds like a class name, it does not indicate an action as most functions should.
+ * stbl in the function names should just be written out long ways, be clear with names, not quick for typing them.
+ * Not a fan of helpers within helpers within helpers, particularly since it takes the entire process to get a tree object
+ * 		out of it all.
+ * Deal with warnings and deal with warnings you already tried to suppress (try not to suppress them, unless you have a good reason to).
+ * Why is there a string parser function with a helper, you have an entire class dedicated to this concept, yet that class only has one
+ * 		function in it.
+ */
+
+
+
 /**
  * Parses a binary file into a tree structure for visualization.
  * 
@@ -48,7 +70,7 @@ public class TreeParser
      * @param p The key to find a string with.
      * @return The string associated with key p.
      */
-    private String FindValue(long p)
+    private String findValue(long p)
     {
         for (int i = 0; i < engParser.stringTable.size(); i++ )
         {
@@ -197,7 +219,7 @@ public class TreeParser
     	
     	ByteBuffer buffer = ByteBuffer.wrap(stringKey_byte);
     	stringKey = buffer.getLong();
-    	node.data = Pattern.compile(FindValue(stringKey));
+    	node.data = Pattern.compile(findValue(stringKey));
     	
     	// Skip zeroed data
     	index += 4;

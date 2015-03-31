@@ -5,6 +5,14 @@ import java.util.List;
 import tree.regex.components.Node;
 import tree.regex.components.Order;
 
+/**
+ * Notes for improvement:
+ * Add javadoc for class, class variables, and functions
+ * Deal with warnings (try not to simply suppress them)
+ */
+
+
+
 public class RegExTree<T> 
 {
     private Node<T> root;

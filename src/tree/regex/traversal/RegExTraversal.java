@@ -11,6 +11,17 @@ import tree.regex.components.Node;
 import tree.regex.components.Order;
 
 
+/**
+ * Notes for improvement:
+ * Javadoc for class, class variables
+ * Deal with warnings, try not to suppress them and try to deal with 
+ * 		already suppressed things (unless you have good reason not to)
+ * Eliminate magic strings
+ * stop being a hacky 1114 student (check the TODO you made)
+ */
+
+
+
 public class RegExTraversal {
 	
 	private String PARSE_ERROR = "The string was unable to be parsed.";
@@ -33,7 +44,7 @@ public class RegExTraversal {
 	@SuppressWarnings("unchecked")
 	public SimpleEntry<Boolean, String> TransformInput(String input)
 	{
-		if (!ValidateString(input))
+		if (!validateString(input))
 		{
 			return new SimpleEntry<Boolean, String>(false, PARSE_ERROR);
 		}
@@ -185,7 +196,7 @@ public class RegExTraversal {
 	 * @param input The input string to validate.
 	 * @return Whether or not the string can be parsed.
 	 */
-	private boolean ValidateString(String input) 
+	private boolean validateString(String input) 
 	{
 		if (input == null)
 		{

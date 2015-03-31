@@ -4,6 +4,16 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Notes for improvement:
+ * Get rid of C# style comments
+ * Consider additional comments in function to help other 
+ * 		devs understand it.
+ */
+
+
+
+
 /// <summary>
 /// Class for parsing string tables.
 /// </summary>
