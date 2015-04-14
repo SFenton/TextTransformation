@@ -49,6 +49,10 @@ public class RegExTraversal {
 			return new SimpleEntry<Boolean, String>(false, PARSE_ERROR);
 		}
 		
+		// Temporary hacky code
+		input = input.replace("vs.", "vs@");
+		input = input.replace("U.S.", "U@S@");
+		
 		return TreeTransformation(input, tree.getRoot());
 	}
 
@@ -103,6 +107,11 @@ public class RegExTraversal {
 	{
 		String output = "";
 		
+		for (int i = 0; i < match.groupCount(); i++)
+		{
+			System.out.println(match.group(i));
+		}
+		
 		// Iterate through the enum in the proper order.
 		for (Order enumOrder : Order.values())
 		{
@@ -110,9 +119,65 @@ public class RegExTraversal {
 			{
 				if (enumOrder.equals(order.get(i)))
 				{
+					String matchResult = "";
+					for (int j = i + 1; j < match.groupCount(); j++ )
+					{
+						if (validateString(match.group(j)))
+						{
+							matchResult = match.group(j);
+							j = match.groupCount();
+						}
+					}
 					// 0th match is the whole string; capturing groups start
 					// at index 1
-					output += "\"" + formatString(match.group(i + 1), enumOrder) + "\"";
+					if (enumOrder.equals(Order.Author))
+					{
+						output += "\"" + formatString(matchResult, enumOrder) + "\"";
+					}
+					else
+					{
+						// Remove leading and trailing whitespace
+						matchResult= matchResult.trim();
+						if (matchResult.startsWith("\"") && matchResult.endsWith("\""))
+						{
+							if (matchResult.endsWith(",\""))
+							{
+								matchResult = matchResult.replace(",\"", "\"");
+							}
+							
+							matchResult = matchResult.replace("\"", "'");
+							
+							output += matchResult;
+						}
+						else
+						{
+							// Temporary junky fix
+							if (matchResult.startsWith(",") || matchResult.startsWith("."))
+							{
+								int spaceCount = 1;
+								while (matchResult.charAt(spaceCount) == ' ')
+								{
+									spaceCount++;
+								}
+								matchResult = matchResult.substring(spaceCount, matchResult.length());
+							}
+							
+							// Temporary junky fix for quotation mark issues
+							matchResult = matchResult.replace("\"", "'");
+							
+							matchResult = matchResult.trim();
+							
+							if (matchResult.endsWith(",'") || matchResult.endsWith(".'"))
+							{
+								matchResult = matchResult.replace(",'", "'");
+								matchResult = matchResult.replace(".'", "'");
+							}
+							
+							// Remove leading space
+							
+							output += "\"" + matchResult + "\"";
+						}
+					}
 				}
 			}
 			
@@ -123,6 +188,11 @@ public class RegExTraversal {
 		if (output.length() > 0 && output.charAt(output.length()-1)==',') {
 		      output = output.substring(0, output.length()-1);
 		    }
+		
+		// Fix select output items.
+		output = output.replace("vs@", "vs.");
+		output = output.replace("U@S@", "U.S.");
+		
 		
 		return output;
 	}
@@ -138,25 +208,23 @@ public class RegExTraversal {
 	 * @return The formatted string.
 	 */
 	private String formatString(String subGroup, Order enumOrder) 
-	{
-		if (subGroup.contains("Al-Qadi, I. L., Lahouar, S. Loulizi, A., Elseifi, M., Wilkes, J. A., and Freeman, T. E."))
-		{
-			System.out.println(subGroup);
-		}
+	{		
 		String output = "";
-		// Split the string based on comma
-		String[] subGroup_split = subGroup.split("\\.,| and | &");
 		
-		// TODO: Don't be a hacky 1114 student
-		List<String> list = new ArrayList<String>();
+		// Split the string based on comma
+		String[] subGroup_split = subGroup.split("\\.,| and | & ");
+		
+		List<String> subGroup_list = new ArrayList<String>();
 
-	    for(String s : subGroup_split) {
-	       if(s != null && s.length() > 0) {
-	          list.add(s);
+	    for(String s : subGroup_split) 
+	    {
+	       if(s != null && s.length() > 0) 
+	       {
+	    	   subGroup_list.add(s);
 	       }
 	    }
 
-	    subGroup_split = list.toArray(new String[list.size()]);
+	    subGroup_split = subGroup_list.toArray(new String[subGroup_list.size()]);
 		
 		// Enum-specific operations should go here
 		if (enumOrder.equals(Order.Author))
